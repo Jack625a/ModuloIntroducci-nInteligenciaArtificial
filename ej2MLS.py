@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
 #['el kit de machine learning']
-#[['el'],['kit'],[de],['machine'],['learning']]
+#[['el'],[' '],['kit'],[de],['machine'],['learning']]
 
 #['La redes neuronales (nodos entrantes, nodos ocultos, nodos salientes)']
 
@@ -19,7 +19,8 @@ categorias={
     1:"Cultural",
     2:"Politico",
     3:"Economico",
-    4:"Policial"
+    4:"Policial",
+    5:"Ciencia",
 }
 
 #Data para procesamiento
@@ -86,6 +87,10 @@ print("Categoria Predicha: ",categorias[prediccionNuevo])
 print("Probabilidades por categoria")
 for i, prob in enumerate(probabilidades):
     print(f"{categorias[i]}: {prob*100}%")
+
+
+
+#5 Predicciones 
 
 
 
