@@ -1,8 +1,16 @@
+#importacion libreria para preprocesamiento
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import accuracy_score, classification_report
 
+nltk.download('stopwords')
+nltk.download('punkt_tab')
 
 #Data para procesamiento
 
@@ -88,22 +96,34 @@ categorias=[
 ]
 
 #Crear las palabras vacias
-palabrasVacias=["de", "la","el","que","en","y","a","los","las",
-                "se","un","una","no","del","por","como","hay","ya"
-                ]
+palabrasVacias=set(stopwords.words('spanish'))
+
+def limpiezaDatos(texto):
+    texto=texto.lower()
+    tokenizacion=word_tokenize(texto,language="spanish")
+    tokensLimpios=[
+        palabra for palabra in tokenizacion if palabra not in palabrasVacias and len(palabra)>2
+    ]
+    return " ".join(tokensLimpios)
+
+noticiasLimpias=[limpiezaDatos(noticia) 
+                 for noticia in noticias]
+
+
+
 
 #PREPROCESAMIENTO Y VECTORIZACION
 
 #Convertir el texto en una representacion numerica
 vectorizar=TfidfVectorizer(
-    lowercase=True,
-    strip_accents='unicode',
+   # lowercase=True,
+   # strip_accents='unicode',
     #stop_words=palabrasVacias,
     ngram_range=(1,2),
     max_features=1000,
-    min_df=2
+    #min_df=2
 )
-entradasVectorizadas=vectorizar.fit_transform(noticias)
+entradasVectorizadas=vectorizar.fit_transform(noticiasLimpias)
 
 #Separacion de los datos
 #80% entrenamiento, 20% pruebas
