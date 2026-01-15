@@ -26,9 +26,9 @@ noticias=[
     "Aún no hay ningún aprehendido por el asesinato de Aramayo y la Policía revisa cámaras de seguridad",
     "Santa Cruz bajo la lupa: investigan 35 denuncias de corrupción policial en diciembre",
     "Transition Design: cómo los diseñadores se convierten en agentes de cambio social, cultural y ecológico",
-    "Primera precarnavalera cultural recorrerá las calles del centro cruceño",
-    "La selección nacional perdio contra Japon",
-    "La seleccion nacional gano su partido amistoso a Chile"
+    "Primera precarnavalera cultural recorrerá las calles del centro cruceño"
+    #"La selección nacional perdio contra Japon",
+    #"La seleccion nacional gano su partido amistoso a Chile"
 ]
 # seleccion - Seleccion - Selección - selección - SELECCION - SELECCIÓN (6 caracteristicas)
 # seleccion - seleccion - selección - selección - seleccion - selección (2 caracteristicas)
@@ -82,24 +82,40 @@ categorias=[
     "Policial",
     "Cultural",
     "Cultural",
-    "Deportivo",
-    "Deportivo"
+    #"Deportivo",
+    #"Deportivo"
 
 ]
 
+#Crear las palabras vacias
+palabrasVacias=["de", "la","el","que","en","y","a","los","las",
+                "se","un","una","no","del","por","como","hay","ya"
+                ]
+
+#PREPROCESAMIENTO Y VECTORIZACION
+
 #Convertir el texto en una representacion numerica
-vectorizar=TfidfVectorizer()
+vectorizar=TfidfVectorizer(
+    lowercase=True,
+    strip_accents='unicode',
+    #stop_words=palabrasVacias,
+    ngram_range=(1,2),
+    max_features=1000,
+    min_df=2
+)
 entradasVectorizadas=vectorizar.fit_transform(noticias)
 
 #Separacion de los datos
 #80% entrenamiento, 20% pruebas
-xEntrenamiento,xPrueba,yEntrenamiento,yPrueba=train_test_split(entradasVectorizadas,categorias,test_size=0.20)
+xEntrenamiento,xPrueba,yEntrenamiento,yPrueba=train_test_split(entradasVectorizadas,categorias,test_size=0.20,random_state=42)
+
 
 #Crear el modelo Perceptron multicapa
 modelo=MLPClassifier(
-    hidden_layer_sizes=(10,),
+    hidden_layer_sizes=(20,10),
     activation="relu",
-    max_iter=500
+    max_iter=500,
+    random_state=42
 )
 
 #Entrenar el modelo
