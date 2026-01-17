@@ -1,16 +1,8 @@
-#importacion libreria para preprocesamiento
-import nltk
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
-
-
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import accuracy_score, classification_report
 
-nltk.download('stopwords')
-nltk.download('punkt_tab')
 
 #Data para procesamiento
 
@@ -34,9 +26,9 @@ noticias=[
     "Aún no hay ningún aprehendido por el asesinato de Aramayo y la Policía revisa cámaras de seguridad",
     "Santa Cruz bajo la lupa: investigan 35 denuncias de corrupción policial en diciembre",
     "Transition Design: cómo los diseñadores se convierten en agentes de cambio social, cultural y ecológico",
-    "Primera precarnavalera cultural recorrerá las calles del centro cruceño"
-    #"La selección nacional perdio contra Japon",
-    #"La seleccion nacional gano su partido amistoso a Chile"
+    "Primera precarnavalera cultural recorrerá las calles del centro cruceño",
+    "La selección nacional perdio contra Japon",
+    "La seleccion nacional gano su partido amistoso a Chile"
 ]
 # seleccion - Seleccion - Selección - selección - SELECCION - SELECCIÓN (6 caracteristicas)
 # seleccion - seleccion - selección - selección - seleccion - selección (2 caracteristicas)
@@ -90,52 +82,39 @@ categorias=[
     "Policial",
     "Cultural",
     "Cultural",
-    #"Deportivo",
-    #"Deportivo"
+    "Deportivo",
+    "Deportivo"
 
 ]
 
-#Crear las palabras vacias
-palabrasVacias=set(stopwords.words('spanish'))
-
-def limpiezaDatos(texto):
-    texto=texto.lower()
-    tokenizacion=word_tokenize(texto,language="spanish")
-    tokensLimpios=[
-        palabra for palabra in tokenizacion if palabra not in palabrasVacias and len(palabra)>2
-    ]
-    return " ".join(tokensLimpios)
-
-noticiasLimpias=[limpiezaDatos(noticia) 
-                 for noticia in noticias]
-
-
-
-
-#PREPROCESAMIENTO Y VECTORIZACION
-
 #Convertir el texto en una representacion numerica
 vectorizar=TfidfVectorizer(
-   # lowercase=True,
+    lowercase=True,
     strip_accents='unicode',
     #stop_words=palabrasVacias,
     ngram_range=(1,2),
     max_features=5000,
     #min_df=2
 )
-entradasVectorizadas=vectorizar.fit_transform(noticiasLimpias)
+entradasVectorizadas=vectorizar.fit_transform(noticias)
 
 #Separacion de los datos
 #80% entrenamiento, 20% pruebas
-xEntrenamiento,xPrueba,yEntrenamiento,yPrueba=train_test_split(entradasVectorizadas,categorias,test_size=0.20,random_state=42)
-
+xEntrenamiento,xPrueba,yEntrenamiento,yPrueba=train_test_split(entradasVectorizadas,categorias,test_size=0.20, random_state=42)
 
 #Crear el modelo Perceptron multicapa
 modelo=MLPClassifier(
-    hidden_layer_sizes=(20,10),
+    hidden_layer_sizes=(30,15),
     activation="relu",
+    #OPTIMIZADOR Adam
+    solver="adam",
     max_iter=500,
+    alpha=0.0005,
+    early_stopping=True,
+    validation_fraction=0.2,
+    n_iter_no_change=10,
     random_state=42
+
 )
 
 #Entrenar el modelo
