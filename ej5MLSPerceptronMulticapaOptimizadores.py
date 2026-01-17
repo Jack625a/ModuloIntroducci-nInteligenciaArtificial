@@ -1,9 +1,17 @@
+#importacion libreria para preprocesamiento
+import re
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import accuracy_score, classification_report
 
 
+nltk.download("stopwords")
+nltk.download('punkt_tab')
 #Data para procesamiento
 
 noticias=[
@@ -59,6 +67,21 @@ noticias=[
 #Mejor equilibrio con datasets pequeños y medianos usar hasta bigramas
 #dataset grande Trigramas - n-gramas
 
+palabrasVacias=set(stopwords.words("spanish"))
+
+def limpiezaDatos(texto):
+    texto=texto.lower()
+    #ELIMINACION DE NUMEROS SIMBOLOS Y CARCTERES
+    texto=re.sub(r'[/()-*+''""]','',texto)
+
+    tokenizacion=word_tokenize(texto,language="spanish")
+    tokensLimpios=[
+        palabra for palabra in tokenizacion if palabra not in palabrasVacias and len(palabra)>2
+    ]
+    return " ".join(tokensLimpios)
+
+noticiasLimpias=[limpiezaDatos(noticia) for noticia in noticias]
+
 
 
 categorias=[
@@ -89,18 +112,18 @@ categorias=[
 
 #Convertir el texto en una representacion numerica
 vectorizar=TfidfVectorizer(
-    lowercase=True,
+    #lowercase=True,
     strip_accents='unicode',
     #stop_words=palabrasVacias,
     ngram_range=(1,2),
     max_features=5000,
     #min_df=2
 )
-entradasVectorizadas=vectorizar.fit_transform(noticias)
+entradasVectorizadas=vectorizar.fit_transform(noticiasLimpias)
 
 #Separacion de los datos
 #80% entrenamiento, 20% pruebas
-xEntrenamiento,xPrueba,yEntrenamiento,yPrueba=train_test_split(entradasVectorizadas,categorias,test_size=0.20, random_state=42)
+xEntrenamiento,xPrueba,yEntrenamiento,yPrueba=train_test_split(entradasVectorizadas,categorias,test_size=0.30, random_state=42)
 
 #Crear el modelo Perceptron multicapa
 modelo=MLPClassifier(
@@ -110,7 +133,7 @@ modelo=MLPClassifier(
     solver="adam",
     max_iter=500,
     alpha=0.0005,
-    early_stopping=True,
+    #early_stopping=True,
     validation_fraction=0.2,
     n_iter_no_change=10,
     random_state=42
