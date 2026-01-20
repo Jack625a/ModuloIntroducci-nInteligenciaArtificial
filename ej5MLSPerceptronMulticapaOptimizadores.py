@@ -157,9 +157,10 @@ print(classification_report(yPrueba,predicciones))
 #Predicciones con nuevos valores
 nuevasNoticias=[
     "Refuerzan seguridad en la cárcel de Palmasola para evitar violencia",
-    "El 69% de los consumidores realizan sus compras en cadenas de farmacias",
+    "El 69 porciento de los consumidores realizan sus compras en cadenas de farmacias",
     "La Selección nacional concentrará en Santa Cruz con vistas a los tres encuentros de preparación",
-    "Bolivia ante Brasil, Argentina, Perú y Ecuador en Sub-20 femenino"
+    "Bolivia ante Brasil, Argentina, Perú y Ecuador en la Seleccion Nacional Sub-20 femenino",
+    "Fiscalía pide cárcel para cuñado de Yuvinca y afirma que el crimen ocurrió dentro del entorno familiar Uno de los puntos más sensibles señalados por la Fiscalía es que el crimen no habría implicado un secuestro ni el traslado de la menor a otro lugar, sino que, según los indicios recolectados, ocurrió dentro de un entorno familiar",
 ]
 
 #Vectorizar los datos nuevos
