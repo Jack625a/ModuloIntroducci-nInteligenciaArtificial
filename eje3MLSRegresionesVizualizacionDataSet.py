@@ -40,8 +40,11 @@ modelo=MLPRegressor(
     hidden_layer_sizes=(30,20,10),
     activation="relu",
     solver="adam",
-    max_iter=1500,
-    random_state=42
+    max_iter=2500,
+    random_state=42,
+    early_stopping=True, #ENTRENAMIENTO OPTIMO
+    #validation_fraction=0.15
+
 )
 
 #entrenar modelo
