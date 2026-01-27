@@ -58,9 +58,9 @@ modelo.compile(
 entrenamiento=modelo.fit(
     xEntranamiento,
     yEntrenamiento,
-    epochs=500,
+    epochs=100,
     validation_split=0.2,
-    batch_size=4,
+    batch_size=8,
 )
 
 #Cantidad de epocas segun el dataset
@@ -70,5 +70,10 @@ entrenamiento=modelo.fit(
 
 #caso extra dataset inmensos (billones de registros) 500-1000
 
+graficaLOSS=modelo.loss_curve_
+#loos vs epochs
+plt.figure()
+plt.plot(range(1,len(graficaLOSS)+1),graficaLOSS,)
+plt.show()
 
-
+#print(graficaLOSS)
